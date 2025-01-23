@@ -3,13 +3,10 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const routes = require("./routes");
-const pg = require("pg");
 const pgSession = require("connect-pg-simple")(session);
-const bcrypt = require("bcryptjs");
-const LocalStrategy = require("passport-local").Strategy;
-const { body, validationResult } = require("express-validator");
 const pool = require("./db/pool");
 require("dotenv").config();
+
 const PORT = process.env.PORT;
 require("./config/passport");
 

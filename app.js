@@ -27,10 +27,10 @@ app.use(
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
+    createTableIfMissing: true,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
-      secure: true,
       sameSite: "strict",
     },
   })

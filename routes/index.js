@@ -4,9 +4,20 @@ const bcrypt = require("bcryptjs");
 const pool = require("../db/pool");
 const { body, validationResult } = require("express-validator");
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/");
+}
+
 router.get("/", (req, res) => res.render("index", { user: req.user }));
 
 router.get("/sign-up", (req, res) => res.render("sign-up-form"));
+
+router.get("/logged-in", ensureAuthenticated, (req, res) => {
+  res.send("<p>You are logged in</p>");
+});
 
 router.post(
   "/sign-up",

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership</title>
+</head>
+<body>
+    <% if (locals.user && user.membership_status === true) {%>
+        <h1>You are logged in as <%= user.username %></h1>
+        <a href="/log-out">LOG OUT</a>
+            <h2>You are already a Member!</h2>
+            <a href="/">Go home</a>
+        <% } else {%>
+            <form action="/membership" method="POST">
+                <label for="secret">Put in the secret word to become a member</label>
+                <input id="secret" name="secret" placeholder="secret" type="text" />
+                <input type='submit' value="Enter secret">
+            </form>
+            <%}%>
+</body>
+</html>

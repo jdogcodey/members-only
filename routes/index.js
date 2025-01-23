@@ -19,6 +19,10 @@ router.get("/logged-in", ensureAuthenticated, (req, res) => {
   res.send("<p>You are logged in</p>");
 });
 
+router.get("/membership", ensureAuthenticated, (req, res, next) => {
+  res.render("membership", { user: req.user });
+});
+
 router.post(
   "/sign-up",
   [

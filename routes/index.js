@@ -3,6 +3,7 @@ const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const pool = require("../db/pool");
 const { body, validationResult } = require("express-validator");
+require("dotenv").config();
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -20,7 +21,7 @@ router.get("/logged-in", ensureAuthenticated, (req, res) => {
 });
 
 router.get("/membership", ensureAuthenticated, (req, res, next) => {
-  res.render("membership", { user: req.user });
+  res.render("membership", { user: req.user, incorrectLogin: false });
 });
 
 router.post(
@@ -126,6 +127,17 @@ router.get("/log-out", (req, res, next) => {
     }
     res.redirect("/");
   });
+});
+
+router.post("/membership", (req, res, next) => {
+  if (req.body.secret === process.env.USER_SECRET) {
+    pool.query("UPDATE users SET membership_status = true WHERE id = $1", [
+      req.user.id,
+    ]);
+    res.redirect("/membership");
+  } else {
+    res.render("membership", { user: req.user, incorrectLogin: true });
+  }
 });
 
 module.exports = router;

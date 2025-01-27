@@ -35,13 +35,34 @@
                                     <li>
                                         <a href="/create-post">New Post</a>
                                     </li>
-                                    <li>
-                                        <a href="/member-posts">Member Area</a>
-                                    </li>
                                     <%}%>
             </ul>
         </nav>
     </header>
+    <main>
+        <h2>Member Messages</h2>
+        <% if (user && user.membership_status === true) { %>
+            <% messages.forEach((message) => { %>
+                <div class="card">
+                    <h3><%=message.title%></h3>
+                    <p><%=message.content%></p>
+                    <p><%=message.timestamp%></p>
+                    <p><%=message.user%></p>
+                </div>
+            <% })%>
+        <% } else { %>
+            <% messages.forEach((message)=> { %>
+                <div class="card">
+                    <h3>
+                        <%=message.title%>
+                    </h3>
+                    <p>
+                        <%=message.content%>
+                    </p>
+                </div>
+                <% })%>
+        <%}%>
+    </main>
     <footer>
         <p>Created by <a href="https://github.com/jdogcodey">jdogcodey</a> - Following <a
                 href="https://www.theodinproject.com">The Odin Project</a></p>

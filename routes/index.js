@@ -19,7 +19,27 @@ function ensureMember(req, res, next) {
   res.redirect("/membership");
 }
 
-router.get("/", (req, res) => res.render("index", { user: req.user }));
+async function postWithUser() {
+  const { rows } = await pool.query(
+    "SELECT m.title, m.content, m.timestamp, u.username FROM messages m JOIN users u ON m.user_id = u.id;"
+  );
+  return rows;
+}
+
+async function postWithoutUser() {
+  const { rows } = await pool.query("SELECT title, content FROM messages");
+  return rows;
+}
+
+router.get("/", async (req, res) => {
+  const loggedIn = await postWithUser();
+  const notLoggedIn = await postWithoutUser();
+  if (req.user && req.user.membership_status === true) {
+    res.render("index", { user: req.user, messages: loggedIn });
+  } else {
+    res.render("index", { user: req.user, messages: notLoggedIn });
+  }
+});
 
 router.get("/sign-up", (req, res) =>
   res.render("sign-up-form", { user: req.user })
@@ -161,6 +181,26 @@ router.get(
   ensureMember,
   (req, res, next) => {
     res.render("new-post", { user: req.user });
+  }
+);
+
+router.post(
+  "/create-post",
+  ensureAuthenticated,
+  ensureMember,
+  async (req, res, next) => {
+    const userId = req.user.id;
+    const title = req.body.title;
+    const content = req.body.content;
+    try {
+      await pool.query(
+        "INSERT INTO messages (title, content, user_id) VALUES ($1, $2, $3)",
+        [title, content, userId]
+      );
+      res.redirect("/");
+    } catch (err) {
+      next(err);
+    }
   }
 );
 

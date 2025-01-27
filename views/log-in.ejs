@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Membership</title>
+    <title>Login</title>
     <link rel="stylesheet" type="text/css" href="/style/styles.css">
 </head>
 <body>
@@ -41,26 +41,18 @@
             </ul>
         </nav>
     </header>
-    <h2>You are logged in as <%= user.username %>
-    </h2>
-    <a href="/log-out">Log out</a>
-    <% if (user.membership_status === true) {%>
-            <h2>You are already a Member!</h2>
-            <a href="/">Go home</a>
-            <form action="/lose-membership" method="POST">
-                <label for="quit">Tick and Submit to Quit:</label>
-                <input type="checkbox" id="quit" name="quit">
-                <input type="submit" value="Quit">
-            </form>
-        <% } else {%>
-            <% if (incorrectLogin) { %>
-                <h2>Incorrect Secret!</h2>
-            <% } %>
-            <h2>You are not a member!</h2>
-            <form action="/membership" method="POST">
-                <label for="secret">Put in the secret word to become a member</label>
-                <input id="secret" name="secret" placeholder="secret" type="text" />
-                <input type='submit' value="Enter secret">
+    <% if (locals.user) {%>
+        <h2>You are already logged in as <%= user.username %>
+        </h2>
+        <a href="/log-out">Log out</a>
+        <% } else { %>
+            <h2>Please log in</h1>
+            <form action="/log-in" method="POST">
+                <label for="username">Username</label>
+                <input id="username" name="username" placeholder="username" type="text" />
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" />
+                <input type="submit" value="Log In">
             </form>
             <%}%>
     <footer>
@@ -70,3 +62,4 @@
     </footer>
 </body>
 </html>
+

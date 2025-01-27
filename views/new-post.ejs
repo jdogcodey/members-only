@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Membership</title>
+    <title>New Post</title>
     <link rel="stylesheet" type="text/css" href="/style/styles.css">
 </head>
 <body>
@@ -41,28 +41,13 @@
             </ul>
         </nav>
     </header>
-    <h2>You are logged in as <%= user.username %>
-    </h2>
-    <a href="/log-out">Log out</a>
-    <% if (user.membership_status === true) {%>
-            <h2>You are already a Member!</h2>
-            <a href="/">Go home</a>
-            <form action="/lose-membership" method="POST">
-                <label for="quit">Tick and Submit to Quit:</label>
-                <input type="checkbox" id="quit" name="quit">
-                <input type="submit" value="Quit">
-            </form>
-        <% } else {%>
-            <% if (incorrectLogin) { %>
-                <h2>Incorrect Secret!</h2>
-            <% } %>
-            <h2>You are not a member!</h2>
-            <form action="/membership" method="POST">
-                <label for="secret">Put in the secret word to become a member</label>
-                <input id="secret" name="secret" placeholder="secret" type="text" />
-                <input type='submit' value="Enter secret">
-            </form>
-            <%}%>
+    <form action="/post-comment" method="POST">
+        <label for="title">Title:</label>
+        <input type="text" id='title' name="title">
+        <label for="message">Message:</label>
+        <textarea name="message" id="message"></textarea>
+        <input type="submit" value="Post!">
+    </form>
     <footer>
         <p>Created by <a href="https://github.com/jdogcodey">jdogcodey</a> - Following <a
                 href="https://www.theodinproject.com">The Odin Project</a></p>

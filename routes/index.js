@@ -9,20 +9,27 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect("/");
+  res.redirect("/log-in");
+}
+
+function ensureMember(req, res, next) {
+  if (req.user.membership_status === true) {
+    return next();
+  }
+  res.redirect("/membership");
 }
 
 router.get("/", (req, res) => res.render("index", { user: req.user }));
 
-router.get("/sign-up", (req, res) => res.render("sign-up-form"));
-
-router.get("/logged-in", ensureAuthenticated, (req, res) => {
-  res.send("<p>You are logged in</p>");
-});
+router.get("/sign-up", (req, res) =>
+  res.render("sign-up-form", { user: req.user })
+);
 
 router.get("/membership", ensureAuthenticated, (req, res, next) => {
   res.render("membership", { user: req.user, incorrectLogin: false });
 });
+
+router.get("/log-in", (req, res) => res.render("log-in", { user: req.user }));
 
 router.post(
   "/sign-up",
@@ -116,7 +123,8 @@ router.post(
   "/log-in",
   passport.authenticate("local", {
     successRedirect: "/",
-    failureRedirect: "/",
+    failureRedirect: "/log-in",
+    failureMessage: true,
   })
 );
 
@@ -125,7 +133,7 @@ router.get("/log-out", (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    res.redirect("/log-in");
   });
 });
 
@@ -139,5 +147,21 @@ router.post("/membership", (req, res, next) => {
     res.render("membership", { user: req.user, incorrectLogin: true });
   }
 });
+
+router.post("/lose-membership", (req, res, next) => {
+  pool.query("UPDATE users SET membership_status = false WHERE id = $1", [
+    req.user.id,
+  ]);
+  res.redirect("/membership");
+});
+
+router.get(
+  "/create-post",
+  ensureAuthenticated,
+  ensureMember,
+  (req, res, next) => {
+    res.render("new-post", { user: req.user });
+  }
+);
 
 module.exports = router;
